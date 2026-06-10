@@ -44,10 +44,11 @@ body::after{width:420px;height:420px;bottom:-140px;right:-120px;background:rgba(
 .nav-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
 .nav-login{font-size:13.5px;font-weight:600;color:var(--mid);text-decoration:none;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;white-space:nowrap;transition:color var(--transition),background var(--transition)}
 .nav-login:hover{color:var(--pp);background:var(--pp-dim)}
-.nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;color:var(--dark);transition:background var(--transition)}
+.nav-toggle{background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;color:var(--dark);transition:background var(--transition)}
 .nav-toggle:hover{background:var(--pp-dim);color:var(--pp)}.nav-toggle svg{display:block;width:22px;height:22px}
-.mobile-nav{display:none;background:#fff;border-top:1px solid rgba(123,47,247,.1);padding:12px 16px 16px}
-.mobile-nav.open{display:block}.mobile-nav ul{list-style:none;padding:0;margin:0 0 12px}
+.mobile-nav{display:none;background:#fff;border-top:1px solid rgba(123,47,247,.1);padding:12px 16px 16px;animation:mobileNavIn .22s ease}
+.mobile-nav.open{display:block}
+@keyframes mobileNavIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}.mobile-nav ul{list-style:none;padding:0;margin:0 0 12px}
 .mobile-nav ul li a{display:block;padding:10px 8px;font-size:14px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;transition:color var(--transition),background var(--transition)}
 .mobile-nav ul li a:hover{color:var(--pp);background:var(--pp-dim)}
 .mobile-nav .mob-actions{display:flex;flex-direction:column;gap:8px}
@@ -180,6 +181,97 @@ footer{background:#fff;border-top:1px solid rgba(123,47,247,.1);padding:60px 0 2
 @media(max-width:991px){.hero-section{padding:60px 0 40px}h1.hero-heading{white-space:normal}.hero-heading .line1,.hero-heading .line2{white-space:normal}}
 @media(max-width:767px){h2{font-size:1.85rem!important}h3{font-size:1.6rem!important}}
 @media(max-width:575px){.btn-py,.btn-pp,.btn-outline-pp{width:100%;justify-content:center}.hero-cta-row{flex-direction:column}}
+
+/* ============================================================
+   ADDITIONAL RESPONSIVE FIXES
+   ============================================================ */
+
+/* --- Logo: prevent overflow on small screens --- */
+@media(max-width:400px){
+  .logo{width:140px!important;height:auto!important}
+}
+
+/* --- Navbar: tighten height on very small screens --- */
+@media(max-width:360px){
+  .navbar-inner{height:58px}
+}
+
+/* --- Hero heading: allow wrapping on all small screens --- */
+@media(max-width:991px){
+  .hero-heading .line1,
+  .hero-heading .line2{white-space:normal!important}
+  h1.hero-heading{font-size:clamp(1.7rem,6vw,2.8rem)!important}
+}
+@media(max-width:575px){
+  h1.hero-heading{font-size:clamp(1.5rem,8vw,2.2rem)!important}
+  .hero-subtext{font-size:.95rem}
+  .hero-trust{gap:12px;font-size:12px}
+  .hero-section{padding:56px 0 36px}
+}
+
+/* --- Hero section: stack properly on mobile --- */
+@media(max-width:991px){
+  .hero-section .row{--bs-gutter-y:2rem}
+  .col-lg-6{width:100%}
+}
+
+/* --- Wcard floating labels: avoid overflow on mid screens --- */
+@media(max-width:575px){
+  .wcard-label{font-size:10px}
+  .wcard-big{font-size:18px}
+}
+
+/* --- Mindmap section heading: prevent overflow --- */
+@media(max-width:575px){
+  .eyebrow{font-size:10px;letter-spacing:.8px;padding:5px 10px}
+}
+
+/* --- Process steps: single column on extra-small --- */
+@media(max-width:400px){
+  .col-sm-6.step-wrap{width:100%}
+}
+
+/* --- Achievements grid: single column on very small --- */
+@media(max-width:400px){
+  .col-sm-4{width:100%}
+}
+
+/* --- Package cards: improve text wrapping on mobile --- */
+@media(max-width:575px){
+  .pkg-content{padding:16px}
+  .pkg-card h6{font-size:13px}
+}
+
+/* --- CTA banner: improve stacking on small screens --- */
+@media(max-width:575px){
+  .cta-banner{border-radius:16px}
+  .cta-banner .row{gap:1rem}
+  .cta-banner img{max-width:140px!important}
+}
+
+/* --- Footer columns: full width on extra small --- */
+@media(max-width:400px){
+  .col-6{width:100%!important}
+  .footer-bottom{text-align:center;justify-content:center}
+  .footer-bottom .d-flex{flex-direction:column;align-items:center;gap:6px!important}
+}
+
+/* --- Newsletter input wrap: prevent overflow --- */
+@media(max-width:400px){
+  .nl-wrap{flex-wrap:nowrap}
+  .nl-input{min-width:0;font-size:11px}
+}
+
+/* --- Section titles: prevent overflow at all sizes --- */
+h2,h3,h4,h5,h6{overflow-wrap:break-word;word-wrap:break-word;word-break:break-word}
+
+/* --- Container padding boost on very small screens --- */
+@media(max-width:360px){
+  .container{padding-left:14px!important;padding-right:14px!important}
+}
+
+/* --- Prevent any stray horizontal overflow --- */
+img{max-width:100%;height:auto}
 </style>
 </head>
 <body>
@@ -579,8 +671,22 @@ window.addEventListener('scroll',()=>{
   progressBar.style.width=pct+'%';
   document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);
 });
-document.getElementById('navToggle').addEventListener('click',()=>{
-  document.getElementById('mobileNav').classList.toggle('open');
+const navToggle = document.getElementById('navToggle');
+const mobileNav = document.getElementById('mobileNav');
+const hamburgerIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
+const closeIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>`;
+navToggle.addEventListener('click',()=>{
+  const isOpen = mobileNav.classList.toggle('open');
+  navToggle.innerHTML = isOpen ? closeIcon : hamburgerIcon;
+  navToggle.setAttribute('aria-expanded', isOpen);
+});
+// Close mobile nav when a link is clicked
+mobileNav.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileNav.classList.remove('open');
+    navToggle.innerHTML = hamburgerIcon;
+    navToggle.setAttribute('aria-expanded', false);
+  });
 });
 document.querySelectorAll('.btn-pp,.btn-py').forEach(btn=>{
   btn.addEventListener('click',function(e){
