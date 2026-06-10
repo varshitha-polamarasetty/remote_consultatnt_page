@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlexWork — Remote Business Consultation</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pp:#7b7dfc;--pp-light:#a855f7;--pp-dim:#ede9ff;--pp-glow:rgba(123,47,247,.25);
+  --py:#ffcd00;--py-dark:#e6c000;--py-glow:rgba(255,214,0,.35);
+  --dark:#120d2b;--mid:#3d3660;--muted:#7b769a;--bg:#faf8ff;
+  --card-border:rgba(123,47,247,.12);--transition:.3s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--dark);background:var(--bg);overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;border-radius:50%;filter:blur(110px);z-index:-1;pointer-events:none}
+body::before{width:560px;height:560px;top:-180px;left:-180px;background:rgba(123,47,247,.07);animation:blob1 12s ease-in-out infinite}
+body::after{width:420px;height:420px;bottom:-140px;right:-120px;background:rgba(255,214,0,.06);animation:blob2 14s ease-in-out infinite}
+@keyframes blob1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,30px) scale(1.08)}}
+@keyframes blob2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,-20px) scale(1.06)}}
+.text-pp{color:var(--pp)}.text-py{color:var(--py)}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--pp-dim);color:var(--pp);font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:6px 14px;border-radius:100px;border:1px solid rgba(123,47,247,.2);box-shadow:0 0 0 0 var(--pp-glow);animation:popIn .6s .05s both,eyebrowPulse 3s 1s ease-in-out infinite}
+@keyframes eyebrowPulse{0%,100%{box-shadow:0 0 0 0 var(--pp-glow)}50%{box-shadow:0 0 12px 4px rgba(123,47,247,.15)}}
+.btn-pp,.btn-py,.btn-outline-pp{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;border-radius:10px;border:none;position:relative;overflow:hidden;transition:transform var(--transition),box-shadow var(--transition),background var(--transition)}
+.btn-pp::before,.btn-py::before{content:"";position:absolute;top:0;left:-110%;width:60%;height:100%;background:rgba(255,255,255,.25);transform:skewX(-20deg);transition:left .6s ease}
+.btn-pp:hover::before,.btn-py:hover::before{left:130%}
+.btn-py{background:var(--py);color:var(--dark)}.btn-py:hover{background:var(--py-dark);transform:translateY(-3px) scale(1.02);box-shadow:0 12px 28px var(--py-glow);color:var(--dark)}
+.btn-pp{background:var(--pp);color:#fff}.btn-pp:hover{background:#6a1de0;transform:translateY(-3px) scale(1.02);box-shadow:0 12px 28px var(--pp-glow);color:#fff}
+.btn-outline-pp{background:transparent;color:var(--dark);border:2px solid rgba(123,47,247,.25)!important;font-weight:600;border-radius:10px;transition:all var(--transition)}
+.btn-outline-pp:hover{border-color:var(--pp)!important;color:var(--pp);background:var(--pp-dim)}
+.btn-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.4);transform:scale(0);pointer-events:none;animation:rippleOut .55s ease-out forwards}
+@keyframes rippleOut{to{transform:scale(4);opacity:0}}
+.navbar{background:rgba(255,255,255,.85)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(123,47,247,.08);padding:0;transition:box-shadow var(--transition),background var(--transition)}
+.navbar.scrolled{box-shadow:0 8px 32px rgba(18,13,43,.1);background:rgba(255,255,255,.96)!important}
+.navbar-inner{display:flex;align-items:center;height:68px;width:100%;padding:0 1rem;gap:1.5rem}
+.nav-links{display:flex;align-items:center;gap:4px;list-style:none;margin:0 auto;padding:0}
+.nav-links a{display:block;padding:8px 10px;font-size:13.5px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;position:relative;white-space:nowrap;transition:color var(--transition),background var(--transition)}
+.nav-links a::after{content:"";position:absolute;bottom:4px;left:50%;width:0;height:2px;background:var(--pp);border-radius:2px;transform:translateX(-50%);transition:width var(--transition)}
+.nav-links a:hover{color:var(--pp);background:var(--pp-dim)}.nav-links a:hover::after{width:60%}
+.nav-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.nav-login{font-size:13.5px;font-weight:600;color:var(--mid);text-decoration:none;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;white-space:nowrap;transition:color var(--transition),background var(--transition)}
+.nav-login:hover{color:var(--pp);background:var(--pp-dim)}
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;color:var(--dark);transition:background var(--transition)}
+.nav-toggle:hover{background:var(--pp-dim);color:var(--pp)}.nav-toggle svg{display:block;width:22px;height:22px}
+.mobile-nav{display:none;background:#fff;border-top:1px solid rgba(123,47,247,.1);padding:12px 16px 16px}
+.mobile-nav.open{display:block}.mobile-nav ul{list-style:none;padding:0;margin:0 0 12px}
+.mobile-nav ul li a{display:block;padding:10px 8px;font-size:14px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;transition:color var(--transition),background var(--transition)}
+.mobile-nav ul li a:hover{color:var(--pp);background:var(--pp-dim)}
+.mobile-nav .mob-actions{display:flex;flex-direction:column;gap:8px}
+.mobile-nav .mob-actions .btn-py,.mobile-nav .mob-actions .nav-login{width:100%;justify-content:center;padding:10px 16px}
+.hero-section{padding:80px 0 60px;position:relative}
+h1.hero-heading{font-size:clamp(2rem,4.5vw,3.4rem)!important;font-weight:800!important;line-height:1.12;letter-spacing:-.5px;margin-bottom:20px}
+.hero-heading .line1,.hero-heading .line2{display:block;white-space:nowrap}
+.hero-subtext{font-size:clamp(.95rem,1.5vw,1.1rem);color:var(--muted);line-height:1.7;max-width:480px;margin-bottom:28px}
+.hero-trust{display:flex;flex-wrap:wrap;gap:20px;font-size:13px;font-weight:600;color:var(--muted);padding-top:20px;border-top:1px solid rgba(123,47,247,.1)}
+.hero-trust span{display:flex;align-items:center;gap:6px}.hero-trust i{color:var(--pp)}
+.hero-img-wrap{position:relative;display:flex;justify-content:center;align-items:center;min-height:520px}
+.hero-img-wrap::before{content:"";position:absolute;width:min(480px,90vw);height:min(480px,90vw);background:radial-gradient(circle,rgba(123,47,247,.12),transparent 70%);border-radius:50%;z-index:0}
+.dots-bg{position:absolute;inset:0;background-image:radial-gradient(rgba(123,47,247,.18) 1px,transparent 1px);background-size:22px 22px;opacity:.5;z-index:0}
+.main-hero-img{width:100%;max-width:420px;height:520px;object-fit:cover;border-radius:36px;position:relative;z-index:2;box-shadow:0 32px 64px rgba(18,13,43,.14);animation:heroFloat 6s ease-in-out infinite;transition:transform .6s ease}
+.hero-img-wrap:hover .main-hero-img{animation-play-state:paused;transform:scale(1.025)}
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.wcard{background:#fff;border-radius:18px;padding:16px;width:182px;box-shadow:0 12px 32px rgba(18,13,43,.1);position:absolute;z-index:3;transition:transform var(--transition),box-shadow var(--transition);border:1px solid rgba(123,47,247,.08)}
+.wcard:hover{transform:scale(1.06)!important;box-shadow:0 18px 40px var(--pp-glow)}
+.wcard.w1{top:24px;left:-16px;animation:slideRight .7s .2s both,heroFloat 5s 1s ease-in-out infinite}
+.wcard.w2{bottom:24px;left:-16px;animation:slideRight .7s .35s both,heroFloat 5s .5s ease-in-out infinite}
+.wcard.w3{top:24px;right:-16px;animation:fadeSlideUp .7s .2s both,heroFloat 5s 1.1s ease-in-out infinite}
+.wcard.w4{bottom:24px;right:-16px;animation:fadeSlideUp .7s .35s both,heroFloat 5s 1.7s ease-in-out infinite}
+.wcard-label{font-size:11px;font-weight:700;color:var(--dark);line-height:1.3}
+.wcard-sub{font-size:10px;color:var(--muted)}.wcard-big{font-size:22px;font-weight:800;color:var(--dark);line-height:1}.wcard-tag{font-size:10px;font-weight:700;color:var(--pp)}
+@media(max-width:1199px){.wcard{width:158px;padding:13px}.wcard.w1,.wcard.w2{left:0}.wcard.w3,.wcard.w4{right:0}}
+@media(max-width:767px){
+  .hero-img-wrap{flex-direction:column;min-height:auto}.main-hero-img{height:300px;border-radius:24px;max-width:100%}.hero-img-wrap::before{width:260px;height:260px}
+  .wcard{position:relative!important;inset:auto!important;width:calc(50% - 8px);animation:none!important;transform:none!important}.wcard:hover{transform:translateY(-4px)!important}
+  .widgets-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-top:16px;z-index:3;position:relative}
+}
+@media(max-width:400px){.main-hero-img{height:220px}.wcard{width:100%}.widgets-grid{grid-template-columns:1fr}}
+section{opacity:0;transform:translateY(50px);transition:opacity .7s ease,transform .7s ease}
+section.visible{opacity:1;transform:translateY(0)}
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity .55s ease,transform .55s ease}.fade-up.in{opacity:1;transform:translateY(0)}
+.section-title-anim{opacity:0;transform:translateX(-30px);transition:opacity .65s ease,transform .65s ease;position:relative;display:inline-block}
+.section-title-anim::after{content:"";position:absolute;bottom:-6px;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--pp),var(--py));border-radius:3px;transition:width .6s ease .3s}
+.section-title-anim.in{opacity:1;transform:translateX(0)}.section-title-anim.in::after{width:60%}
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(123,47,247,.15),transparent);margin:0 auto;border:none}
+.mindmap-wrap{position:relative;min-height:650px;display:flex;justify-content:center;align-items:center}
+.hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:90px;height:90px;display:flex;align-items:center;justify-content:center;z-index:10;animation:none!important}
+.hub-core{width:28px;height:28px;border-radius:50%;background:#7b7dfc;position:relative;box-shadow:0 0 15px rgba(123,47,247,.8),0 0 30px rgba(123,47,247,.6),0 0 60px rgba(123,47,247,.4)}
+.hub-core::before{content:"";position:absolute;inset:-15px;border-radius:50%;border:2px solid rgba(123,47,247,.4);animation:pulseRing 2s infinite}
+.hub-core::after{content:"";position:absolute;inset:-30px;border-radius:50%;border:2px solid rgba(123,47,247,.2);animation:pulseRing 2s infinite .5s}
+@keyframes pulseRing{0%{transform:scale(.8);opacity:1}100%{transform:scale(1.4);opacity:0}}
+.node{position:absolute;background:#fff;padding:12px 16px;border-radius:14px;box-shadow:0 4px 20px rgba(18,13,43,.07);max-width:220px;z-index:4;border-left:3px solid transparent;transition:all var(--transition);cursor:pointer;user-select:none}
+.node:hover,.node.active{background:var(--pp);border-left-color:#a855f7;box-shadow:0 16px 40px var(--pp-glow);transform:translateY(-8px)}
+.node:hover h6,.node.active h6{color:#fff}.node:hover p,.node.active p{color:rgba(255,255,255,.8)}
+.node:hover .node-ico,.node.active .node-ico{background:rgba(255,255,255,.2);color:#fff}
+.node.active{box-shadow:0 16px 40px var(--pp-glow),0 0 0 6px rgba(123,47,247,.18);transform:translateY(-8px) scale(1.04);animation:nodeRipple .55s ease-out forwards}
+.node-2:hover,.node-5:hover{transform:translateX(-50%) translateY(-6px)}.node-2.active,.node-5.active{transform:translateX(-50%) translateY(-8px) scale(1.04);animation:nodeRipple .55s ease-out forwards}
+@keyframes nodeRipple{0%{box-shadow:0 0 0 0 rgba(123,47,247,.45)}100%{box-shadow:0 0 0 24px rgba(123,47,247,0)}}
+.node-ico{width:38px;height:38px;border-radius:50%;background:var(--pp-dim);color:var(--pp);display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px;flex-shrink:0;transition:background var(--transition),color var(--transition),transform var(--transition)}
+.node:hover .node-ico{transform:scale(1.15) rotate(-5deg)}.node.active .node-ico{animation:iconBounce .4s ease-out}
+@keyframes iconBounce{0%{transform:scale(1)}40%{transform:scale(1.3)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+.node-1{top:25%;left:2%;transform:translateY(-50%)}.node-2{top:0;left:50%;transform:translateX(-50%)}.node-3{top:25%;right:2%;transform:translateY(-50%)}
+.node-4{top:68%;left:2%;transform:translateY(-50%)}.node-5{bottom:0;left:50%;transform:translateX(-50%)}.node-6{top:68%;right:2%;transform:translateY(-50%)}
+.svg-lines{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+@media(max-width:991px){
+  .mindmap-wrap{min-height:auto!important;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-top:16px}
+  .hub,.svg-lines{display:none}
+  .node{position:relative!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;transform:none!important;max-width:100%;text-align:center;display:flex;flex-direction:column;align-items:center}
+  .node:hover{transform:translateY(-4px)!important;border-left-color:transparent;border-top:3px solid var(--pp)}
+}
+@media(max-width:575px){.mindmap-wrap{grid-template-columns:1fr}}
+.step-wrap{text-align:center;position:relative;z-index:2;cursor:pointer}
+.step-ico{width:88px;height:88px;margin:0 auto 18px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--pp);box-shadow:0 10px 28px rgba(18,13,43,.08);position:relative;z-index:3;transition:all .35s ease}
+.step-wrap:hover .step-ico{background:var(--pp);color:var(--py);transform:translateY(-5px) scale(1.12);box-shadow:0 0 0 6px rgba(123,47,247,.15),0 14px 32px var(--pp-glow)}
+.step-wrap.active .step-ico{background:var(--dark);color:var(--py);box-shadow:0 0 0 6px rgba(255,214,0,.25),0 14px 40px rgba(18,13,43,.45);transform:scale(1.12);animation:yellowBurst .7s ease-out forwards!important}
+.step-wrap.active .step-ico::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(255,214,0,.5);animation:ringPulse 1.8s ease-in-out 0.7s infinite}
+.step-wrap.active .step-ico i{animation:spinOnce .5s ease-out forwards}
+.step-wrap.active .step-num{background:var(--py);color:var(--dark)}.step-wrap.active h6{color:var(--pp)}
+.step-wrap:hover::after,.step-wrap.active::after{border-color:var(--pp)!important;opacity:1!important}.step-wrap.active::after{border-color:var(--py)!important}
+.step-num{position:absolute;top:-4px;right:-4px;background:var(--pp);color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+.step-wrap:not(:last-child)::after{content:"";position:absolute;top:44px;left:65%;width:55%;border-top:2px dashed rgba(123,47,247,.3);transition:border-color var(--transition),opacity var(--transition)}
+.step-ico::after{content:"";position:absolute;top:38px;right:-195px;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:10px solid var(--pp);opacity:.5}
+@media(max-width:767px){.step-wrap:not(:last-child)::after,.step-ico::after{display:none}.step-wrap{margin-bottom:24px}.step-ico{width:74px;height:74px}}
+@keyframes yellowBurst{0%{box-shadow:0 0 0 0 rgba(255,214,0,.7),0 14px 40px rgba(18,13,43,.45)}40%{box-shadow:0 0 0 18px rgba(255,214,0,.15),0 14px 40px rgba(18,13,43,.45)}100%{box-shadow:0 0 0 28px rgba(255,214,0,0),0 14px 40px rgba(18,13,43,.45)}}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.12);opacity:.15}}
+@keyframes spinOnce{from{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.2)}to{transform:rotate(360deg) scale(1)}}
+.ach-card{background:#fff;border:1px solid var(--card-border);border-radius:18px;padding:30px 22px;min-height:220px;height:100%;display:flex;flex-direction:column;justify-content:flex-start;position:relative;overflow:hidden}
+.ach-card i{font-size:3.2rem!important;transition:all .35s ease;position:relative;z-index:1}
+.ach-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--pp-dim),transparent);opacity:0;transition:opacity var(--transition);border-radius:inherit}
+.ach-card::after{content:"";position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:rgba(255,255,255,.12);transform:skewX(-20deg);transition:left .5s ease;pointer-events:none}
+.ach-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 16px 36px var(--pp-glow);border-color:rgba(123,47,247,.25)}
+.ach-card:hover::before{opacity:1}.ach-card:hover::after{left:130%}.ach-card:hover i{color:#e6b800!important;transform:scale(1.12)}
+.ach-card.active{background:linear-gradient(135deg,#fffbea,#fff8d6);border-color:var(--py);box-shadow:0 16px 36px var(--py-glow);transform:translateY(-8px) scale(1.03)}
+.ach-card.active::before{opacity:0}.ach-card.active i{color:var(--py)!important}
+.ach-card h6,.ach-card p{position:relative;z-index:1}
+.leader-logo-wrap{width:70px;height:70px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;transition:all .35s ease}
+.leader-logo-wrap svg{width:64px;height:64px;display:block}.logo-star{fill:var(--pp);transition:all .35s ease}
+.ach-card:hover .leader-logo-wrap{transform:scale(1.18) rotate(-6deg);filter:drop-shadow(0 6px 12px var(--pp-glow))}
+.ach-card:hover .logo-star{fill:var(--py);filter:drop-shadow(0 8px 18px rgba(255,214,0,.45))}
+.ach-card.active .leader-logo-wrap{transform:scale(1.22) rotate(-8deg);filter:drop-shadow(0 6px 16px var(--py-glow))}
+.ach-card.active .leader-logo-wrap .logo-bg{fill:#ffe88a}.ach-card.active .leader-logo-wrap .logo-star{fill:var(--py);stroke:var(--py)}.ach-card.active .leader-logo-wrap .logo-center{fill:var(--dark)}
+.pkg-card{position:relative;overflow:hidden;display:flex;padding:0;min-height:160px;border-radius:18px;border:1px solid var(--card-border);background:#fff;transition:all var(--transition)}
+.pkg-card:hover{transform:translateY(-6px);box-shadow:0 20px 44px var(--pp-glow);border-color:rgba(123,47,247,.3)}
+.pkg-card:hover img{transform:scale(1.08)}.pkg-card img{transition:transform .55s ease}
+.pkg-content{padding:22px;flex:1;z-index:1}.pkg-img-wrap{position:relative;width:38%;height:160px;overflow:hidden;flex-shrink:0}
+.pkg-img-wrap::before{content:"";position:absolute;top:0;left:0;width:56px;height:100%;background:linear-gradient(to right,#fff,transparent);z-index:1}
+.pkg-img-wrap img{width:100%;height:100%;object-fit:cover}
+.pkg-card::after{content:"";position:absolute;left:0;top:0;width:4px;height:0%;background:var(--pp);border-radius:2px 0 0 2px;transition:height .4s ease}
+.pkg-card:hover::after,.pkg-card:focus-within::after{height:100%}
+.pkg-badge{position:absolute;top:14px;right:14px;background:var(--py);color:var(--dark);font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;opacity:0;transform:translateY(-6px) scale(.9);transition:all .3s ease;z-index:5}
+.pkg-card:hover .pkg-badge{opacity:1;transform:translateY(0) scale(1)}
+@media(max-width:575px){.pkg-card{flex-direction:column}.pkg-img-wrap{width:100%;height:180px}.pkg-img-wrap::before{display:none}}
+.cta-banner{background:linear-gradient(135deg,var(--pp) 0%,#7b7dfc 100%);border-radius:24px;position:relative;overflow:hidden;transition:transform var(--transition),box-shadow var(--transition)}
+.cta-banner:hover{transform:translateY(-6px);box-shadow:0 24px 50px var(--pp-glow)}
+.cta-banner::before{content:"";position:absolute;width:400px;height:400px;top:-120px;right:-100px;background:rgba(255,255,255,.06);border-radius:50%}
+.cta-banner::after{content:"";position:absolute;width:260px;height:260px;bottom:-80px;left:40%;background:rgba(255,214,0,.08);border-radius:50%}
+footer{background:#fff;border-top:1px solid rgba(123,47,247,.1);padding:60px 0 28px}
+.footer-logo{font-weight:800;font-size:22px;text-decoration:none;color:var(--dark);letter-spacing:-.4px}.footer-logo span{color:var(--py)}
+.footer-link{color:rgb(16,16,16);text-decoration:none;font-size:13px;font-weight:100;display:block;padding:3px 0;transition:color var(--transition),padding var(--transition)}
+.footer-link:hover{color:var(--pp);padding-left:4px}
+.social-icon{color:var(--muted);font-size:18px;transition:color var(--transition),transform var(--transition);display:inline-block;position:relative}
+.social-icon::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid transparent;transition:border-color var(--transition),transform var(--transition)}
+.social-icon:hover{color:var(--pp);transform:translateY(-5px) scale(1.2)}.social-icon:hover::after{border-color:var(--pp);transform:scale(1.3)}
+.nl-wrap{display:flex;border-radius:10px;overflow:hidden;border:1.5px solid rgba(123,47,247,.2);background:#fff;transition:border-color var(--transition)}
+.nl-wrap:focus-within{border-color:var(--pp);box-shadow:0 0 0 4px var(--pp-dim)}
+.nl-input{border:none;outline:none;padding:9px 12px;font-size:12px;font-family:inherit;flex:1;background:transparent;color:var(--dark)}
+.nl-btn{background:var(--py);border:none;padding:9px 14px;cursor:pointer;color:var(--dark);transition:background var(--transition)}.nl-btn:hover{background:var(--py-dark)}
+.footer-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding-top:20px;border-top:1px solid rgba(123,47,247,.08);font-size:12px;color:var(--muted)}
+.footer-bottom a{color:var(--muted);text-decoration:none;transition:color var(--transition)}.footer-bottom a:hover{color:var(--pp)}
+.process-bg{background:#faf8ff}
+#scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--pp),var(--py));z-index:9999;border-radius:0 3px 3px 0;transition:width .1s linear;box-shadow:0 0 8px var(--pp-glow)}
+.particle{position:fixed;border-radius:50%;pointer-events:none;z-index:-1;opacity:.06;animation:floatParticle linear infinite}
+@keyframes floatParticle{from{transform:translateY(100vh) rotate(0deg)}to{transform:translateY(-120px) rotate(360deg)}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.8)}70%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:991px){.hero-section{padding:60px 0 40px}h1.hero-heading{white-space:normal}.hero-heading .line1,.hero-heading .line2{white-space:normal}}
+@media(max-width:767px){h2{font-size:1.85rem!important}h3{font-size:1.6rem!important}}
+@media(max-width:575px){.btn-py,.btn-pp,.btn-outline-pp{width:100%;justify-content:center}.hero-cta-row{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar sticky-top" id="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <img class="logo" src="https://res.cloudinary.com/dxcwpasvu/image/upload/v1779554636/flexwork_logo_xarrbu.png" width="200" height="60" alt="FlexWork">
+      <ul class="nav-links d-none d-lg-flex">
+        <li><a href="#">Our Services</a></li>
+        <li><a href="#">Who We Are</a></li>
+        <li><a href="#">How We Work</a></li>
+        <li><a href="#">Resources</a></li>
+        <li><a href="#">Pricing</a></li>
+      </ul>
+      <div class="nav-actions d-none d-lg-flex">
+        <a href="#" class="nav-login"><i class="fa-regular fa-user"></i>Login</a>
+        <button class="btn btn-py px-4 py-2">Book a Consultation <i class="fa-solid fa-arrow-right" style="font-size:11px"></i></button>
+      </div>
+      <button class="nav-toggle d-lg-none ms-auto" id="navToggle" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="container">
+    <div class="mobile-nav" id="mobileNav">
+      <ul>
+        <li><a href="#">Our Services</a></li>
+        <li><a href="#">Who We Are</a></li>
+        <li><a href="#">How We Work</a></li>
+        <li><a href="#">Resources</a></li>
+        <li><a href="#">Pricing</a></li>
+      </ul>
+      <div class="mob-actions">
+        <a href="#" class="nav-login"><i class="fa-regular fa-user"></i>Login</a>
+        <button class="btn btn-py px-4 py-2">Book a Consultation <i class="fa-solid fa-arrow-right" style="font-size:11px"></i></button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="hero-badge mb-3">
+          <span class="eyebrow"><i class="fa-solid fa-bolt"></i>1-on-1 Remote Business Consultation</span>
+        </div>
+        <h1 class="hero-heading">
+          <span class="line1">Get Expert Advice.</span>
+          <span class="line2">Make <span class="text-pp">Better Decisions.</span></span>
+        </h1>
+        <p class="hero-subtext">Connect with senior industry consultants — 20+ years across IT, Cyber Security, HR, Product, Operations, Leadership and more.</p>
+        <div class="d-flex flex-wrap gap-3 mb-4 hero-cta-row">
+          <button class="btn btn-py px-4 py-3">Book a Consultation <i class="fa-solid fa-arrow-right"></i></button>
+          <button class="btn btn-outline-pp px-4 py-3"><i class="fa-regular fa-compass"></i>Explore Experts</button>
+        </div>
+        <div class="hero-trust">
+          <span><i class="fa-solid fa-user-group"></i>One-on-One</span>
+          <span><i class="fa-solid fa-globe"></i>Anytime, Anywhere</span>
+          <span><i class="fa-solid fa-shield-halved"></i>100% Confidential</span>
+        </div>
+      </div>
+      <div class="col-lg-6 hero-img-wrap" id="heroImgWrap">
+        <div class="dots-bg"></div>
+        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=700&q=80" class="main-hero-img" alt="Business consultant">
+        <div class="wcard w1 text-start">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="fa-solid fa-user text-pp" style="font-size:13px"></i>
+            <span class="wcard-label">Your Consultant Match</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&h=100&q=80" class="rounded-circle" style="width:38px;height:38px;object-fit:cover" alt="Consultant">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--dark)">Alex Morgan</div>
+              <div class="wcard-sub">IT Strategy Advisor</div>
+            </div>
+          </div>
+          <div class="wcard-tag mt-2"><i class="fa-solid fa-circle-check me-1"></i>22+ years exp.</div>
+        </div>
+        <div class="wcard w2 text-start">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <i class="fa-solid fa-chart-line text-pp" style="font-size:13px"></i>
+            <span class="wcard-label">Average Impact</span>
+          </div>
+          <div class="wcard-big"><span data-count="96" data-suffix="%">96%</span></div>
+          <div class="wcard-sub mt-1">Client Satisfaction</div>
+        </div>
+        <div class="wcard w3 text-start">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <i class="fa-regular fa-clock text-pp" style="font-size:13px"></i>
+            <span class="wcard-label">Session Duration</span>
+          </div>
+          <div style="font-size:15px;font-weight:800;color:var(--dark)">60 Min</div>
+          <div class="wcard-sub">One-on-One</div>
+        </div>
+        <div class="wcard w4 text-start">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <i class="fa-regular fa-calendar-check text-pp" style="font-size:13px"></i>
+            <span class="wcard-label">Flexible Scheduling</span>
+          </div>
+          <div style="font-size:15px;font-weight:800;color:var(--dark)">Anytime</div>
+          <div class="wcard-sub">Anywhere</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CHALLENGES -->
+<section class="py-5 bg-white">
+  <div class="container py-4">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-4">
+        <span class="eyebrow mb-3 d-inline-flex"><i class="hub-core"></i>Our Experts Can Help You With</span>
+        <h2 class="fw-bold mb-3 section-title-anim" style="font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.2">What Challenges Are You Facing?</h2>
+        <p class="text-muted mb-4" style="font-size:15px;line-height:1.7">Every business faces unique roadblocks. Our experts provide clarity and strategies to move forward with confidence.</p>
+        <button class="btn btn-pp px-4 py-2">Explore All Challenges <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+      <div class="col-lg-8">
+        <div class="mindmap-wrap" id="mindmap">
+          <svg class="svg-lines">
+            <line x1="50%" y1="50%" x2="20%" y2="30%" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="6"/>
+            <line x1="50%" y1="50%" x2="50%" y2="12%" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="6"/>
+            <line x1="50%" y1="50%" x2="80%" y2="30%" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="6"/>
+            <line x1="50%" y1="50%" x2="20%" y2="70%" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="6"/>
+            <line x1="50%" y1="50%" x2="50%" y2="88%" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="6"/>
+            <line x1="50%" y1="50%" x2="80%" y2="70%" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="6"/>
+          </svg>
+          <div class="hub"><div class="hub-core"></div></div>
+          <div class="node node-1 text-md-end text-center d-flex flex-column align-items-md-end align-items-center">
+            <div class="node-ico"><i class="fa-solid fa-chart-line"></i></div>
+            <h6 class="fw-bold mb-1" style="font-size:13.5px">Scaling Your Business</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Overcome growth roadblocks and scale sustainably.</p>
+          </div>
+          <div class="node node-2 text-center d-flex flex-column align-items-center">
+            <div class="node-ico"><i class="fa-solid fa-users"></i></div>
+            <h6 class="fw-bold mb-1" style="font-size:13.5px">Hiring &amp; Team Strategy</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Build the right structure and hire top talent.</p>
+          </div>
+          <div class="node node-3 d-flex flex-column align-items-md-start align-items-center text-md-start text-center">
+            <div class="node-ico"><i class="fa-solid fa-laptop"></i></div>
+            <h6 class="fw-bold mb-1" style="font-size:13.5px">Digital Transformation</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Adopt the right technology and drive change.</p>
+          </div>
+          <div class="node node-4 text-md-end text-center d-flex flex-column align-items-md-end align-items-center">
+            <div class="node-ico"><i class="fa-regular fa-user"></i></div>
+            <h6 class="fw-bold mb-1" style="font-size:13.5px">Leadership Decisions</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Make confident decisions with expert perspectives.</p>
+          </div>
+          <div class="node node-5 text-center d-flex flex-column align-items-center">
+            <div class="node-ico"><i class="fa-solid fa-rocket"></i></div>
+            <h6 class="fw-bold mb-1" style="font-size:13.5px">Product Strategy</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Validate ideas and build products customers love.</p>
+          </div>
+          <div class="node node-6 d-flex flex-column align-items-md-start align-items-center text-md-start text-center">
+            <div class="node-ico"><i class="fa-regular fa-shield"></i></div>
+            <h6 class="fw-bold mb-1" style="font-size:13.5px">Cyber Security Risks</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Strengthen security posture and protect your business.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- PROCESS -->
+<section class="py-5 process-bg">
+  <div class="container py-4">
+    <h3 class="text-center fw-bold mb-5" style="font-size:clamp(1.6rem,3vw,2.2rem)">
+      Want To Connect With The <span class="text-pp">Right Expert?</span>
+    </h3>
+    <div class="row g-4">
+      <div class="col-md-3 col-sm-6 step-wrap fade-up">
+        <div class="step-ico shadow-sm"><i class="fa-regular fa-comments"></i><span class="step-num">01</span></div>
+        <h6 class="fw-bold mb-2">Talk To An Agent</h6>
+        <p class="text-muted px-2" style="font-size:13px">Share your challenge comprehensively with our consultation specialist.</p>
+      </div>
+      <div class="col-md-3 col-sm-6 step-wrap fade-up" style="transition-delay:.1s">
+        <div class="step-ico shadow-sm"><i class="fa-solid fa-magnifying-glass"></i><span class="step-num">02</span></div>
+        <h6 class="fw-bold mb-2">We Understand Your Need</h6>
+        <p class="text-muted px-2" style="font-size:13px">Our agent analyzes your goals and matches the parameters perfectly.</p>
+      </div>
+      <div class="col-md-3 col-sm-6 step-wrap fade-up" style="transition-delay:.2s">
+        <div class="step-ico shadow-sm"><i class="fa-regular fa-handshake"></i><span class="step-num">03</span></div>
+        <h6 class="fw-bold mb-2">Get Matched With The Best</h6>
+        <p class="text-muted px-2" style="font-size:13px">We connect you directly with a veteran expert who has solved it before.</p>
+      </div>
+      <div class="col-md-3 col-sm-6 step-wrap fade-up" style="transition-delay:.3s">
+        <div class="step-ico shadow-sm"><i class="fa-regular fa-calendar-check"></i><span class="step-num">04</span></div>
+        <h6 class="fw-bold mb-2">Book &amp; Start Consulting</h6>
+        <p class="text-muted px-2" style="font-size:13px">Choose an open slot and kick off your tailored session instantly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ACHIEVEMENTS + PACKAGES -->
+<section class="py-5">
+  <div class="container py-4">
+    <div class="row g-5">
+      <div class="col-lg-6">
+        <h4 class="fw-bold mb-4 section-title-anim" style="font-size:clamp(1.3rem,2.5vw,1.6rem)">What You'll Achieve</h4>
+        <div class="row g-3">
+          <div class="col-sm-4 fade-up"><div class="ach-card text-center">
+            <i class="fa-solid fa-flag text-pp mb-3 fs-3"></i>
+            <h6 class="fw-bold" style="font-size:13px">Growth Roadmap</h6>
+            <p class="text-muted mb-0" style="font-size:11px">A step-by-step plan to achieve your goals.</p>
+          </div></div>
+          <div class="col-sm-4 fade-up" style="transition-delay:.07s"><div class="ach-card text-center">
+            <i class="fa-solid fa-microchip text-pp mb-3 fs-3"></i>
+            <h6 class="fw-bold" style="font-size:13px">Technology Recommendations</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Choose the right tools and tech stack.</p>
+          </div></div>
+          <div class="col-sm-4 fade-up" style="transition-delay:.14s"><div class="ach-card text-center">
+            <i class="fa-solid fa-users text-pp mb-3 fs-3"></i>
+            <h6 class="fw-bold" style="font-size:13px">Team Structure Guidance</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Build high-performing teams with clarity.</p>
+          </div></div>
+          <div class="col-sm-4 fade-up" style="transition-delay:.21s"><div class="ach-card text-center">
+            <i class="fa-solid fa-shield-halved text-pp mb-3 fs-3"></i>
+            <h6 class="fw-bold" style="font-size:13px">Security Strategy</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Actionable steps to strengthen and future-proof your security.</p>
+          </div></div>
+          <div class="col-sm-4 fade-up" style="transition-delay:.28s"><div class="ach-card text-center">
+            <i class="fa-solid fa-box text-pp mb-3 fs-3"></i>
+            <h6 class="fw-bold" style="font-size:13px">Product Direction</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Clarity on product strategy, roadmap and market fit.</p>
+          </div></div>
+          <div class="col-sm-4 fade-up" style="transition-delay:.35s"><div class="ach-card text-center">
+            <div class="leader-logo-wrap mb-4">
+              <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <path class="logo-star" d="M20 5L24.49 14.1L34.51 15.55L27.25 22.63L28.97 32.65L20 27.93L11.03 32.65L12.75 22.63L5.49 15.55L15.51 14.1L20 5Z" fill="var(--pp)"/>
+              </svg>
+            </div>
+            <h6 class="fw-bold" style="font-size:13px">Leadership Framework</h6>
+            <p class="text-muted mb-0" style="font-size:11px">Proven frameworks to lead, manage and scale confidently.</p>
+          </div></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <h4 class="fw-bold mb-4" style="font-size:clamp(1.3rem,2.5vw,1.6rem)">Choose A Format That Works For You</h4>
+        <div class="d-flex flex-column gap-3">
+          <div class="pkg-card fade-up">
+            <span class="pkg-badge">Popular</span>
+            <div class="pkg-content">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-comments text-pp"></i>
+                <h6 class="fw-bold mb-0">One-on-One Consultation</h6>
+              </div>
+              <p class="text-muted mb-2" style="font-size:13px">Get expert advice for a specific challenge.</p>
+              <div class="d-flex gap-2 text-muted mb-2" style="font-size:11px">
+                <span><i class="fa-solid fa-check text-pp me-1"></i>60-min</span>
+                <span><i class="fa-solid fa-check text-pp me-1"></i>Focused</span>
+              </div>
+              <button class="btn btn-py" style="font-size:12px;padding:6px 14px">Book Now &rarr;</button>
+            </div>
+            <div class="pkg-img-wrap">
+              <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=400&q=80" alt="Consultation">
+            </div>
+          </div>
+          <div class="pkg-card fade-up" style="transition-delay:.1s">
+            <span class="pkg-badge">Best Value</span>
+            <div class="pkg-content">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-folder-open text-pp"></i>
+                <h6 class="fw-bold mb-0">Advisory Package</h6>
+              </div>
+              <p class="text-muted mb-2" style="font-size:13px">Ongoing guidance for long-term business goals.</p>
+              <div class="d-flex gap-2 text-muted mb-2" style="font-size:11px">
+                <span><i class="fa-solid fa-check text-pp me-1"></i>Multiple</span>
+                <span><i class="fa-solid fa-check text-pp me-1"></i>Priority</span>
+              </div>
+              <button class="btn btn-py" style="font-size:12px;padding:6px 14px">View Packages &rarr;</button>
+            </div>
+            <div class="pkg-img-wrap">
+              <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=400&q=80" alt="Advisory">
+            </div>
+          </div>
+          <div class="pkg-card fade-up" style="transition-delay:.2s">
+            <div class="pkg-content">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-award text-pp"></i>
+                <h6 class="fw-bold mb-0">Executive Mentorship</h6>
+              </div>
+              <p class="text-muted mb-2" style="font-size:13px">Long-term mentorship for leaders and business owners.</p>
+              <div class="d-flex gap-2 text-muted mb-2" style="font-size:11px">
+                <span><i class="fa-solid fa-check text-pp me-1"></i>Partnership</span>
+                <span><i class="fa-solid fa-check text-pp me-1"></i>Growth</span>
+              </div>
+              <button class="btn btn-py" style="font-size:12px;padding:6px 14px">Get Started &rarr;</button>
+            </div>
+            <div class="pkg-img-wrap">
+              <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=400&q=80" alt="Mentorship">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="container" style="padding-bottom:60px">
+  <div class="cta-banner p-4 p-md-5 text-white">
+    <div class="row align-items-center position-relative" style="z-index:2">
+      <div class="col-lg-8 d-flex align-items-center gap-4 flex-wrap">
+        <img src="https://res.cloudinary.com/dxcwpasvu/image/upload/v1780736037/download_y2kfmh.png" class="img-fluid flex-shrink-0" alt="Target" style="max-width:220px">
+        <div>
+          <h3 class="fw-bold mb-2" style="font-size:clamp(1.4rem,3vw,2rem);line-height:1.2">Make Better Decisions.<br>Build A Stronger Future.</h3>
+          <p class="mb-0 opacity-75" style="font-size:14px">Book a 1-on-1 remote consultation with top industry experts — with full corporate confidentiality.</p>
+        </div>
+      </div>
+      <div class="col-lg-4 mt-4 mt-lg-0 text-lg-end">
+        <div class="d-flex flex-column flex-sm-row flex-lg-column gap-3 align-items-lg-end">
+          <button class="btn btn-py px-4 py-3">Book a Consultation <i class="fa-solid fa-arrow-right"></i></button>
+          <button class="btn btn-outline-light px-4 py-3" style="border-width:2px;font-weight:600"><i class="fa-regular fa-comments me-2"></i>Talk To Our Team</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="row g-4 mb-4">
+      <div class="col-lg-4">
+        <img class="logo mb-2" src="https://res.cloudinary.com/dxcwpasvu/image/upload/v1779554636/flexwork_logo_xarrbu.png" width="200" height="60" alt="FlexWork">
+        <p class="text-muted mb-3" style="font-size:13px">Your Skills. Your Path. Your Success.</p>
+        <div class="d-flex gap-3">
+          <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="#" class="social-icon"><i class="fa-brands fa-square-x-twitter"></i></a>
+          <a href="#" class="social-icon"><i class="fa-brands fa-square-facebook"></i></a>
+          <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <h6 class="fw-bold mb-3" style="font-size:13px">Company</h6>
+        <div class="d-flex flex-column gap-1">
+          <a href="#" class="footer-link">Home</a>
+          <a href="#" class="footer-link">Our Services</a>
+          <a href="#" class="footer-link">About Us</a>
+          <a href="#" class="footer-link">Who We Are</a>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <h6 class="fw-bold mb-3" style="font-size:13px">Resources</h6>
+        <div class="d-flex flex-column gap-1">
+          <a href="#" class="footer-link">How We Work</a>
+          <a href="#" class="footer-link">Pro Courses</a>
+          <a href="#" class="footer-link">Job Postings</a>
+          <a href="#" class="footer-link">Success Stories</a>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <h6 class="fw-bold mb-3" style="font-size:13px">Support</h6>
+        <div class="d-flex flex-column gap-1">
+          <a href="#" class="footer-link">Pricing</a>
+          <a href="#" class="footer-link">FAQ</a>
+          <a href="#" class="footer-link">Contact Us</a>
+        </div>
+      </div>
+      <div class="col-md-3 col-lg-2">
+        <h6 class="fw-bold mb-3" style="font-size:13px">Newsletter</h6>
+        <div class="nl-wrap">
+          <input class="nl-input" type="email" placeholder="Your email">
+          <button class="nl-btn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 FlexWork. All rights reserved.</span>
+      <div class="d-flex gap-3">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms &amp; Conditions</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const progressBar=document.getElementById('scroll-progress');
+window.addEventListener('scroll',()=>{
+  const pct=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
+  progressBar.style.width=pct+'%';
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);
+});
+document.getElementById('navToggle').addEventListener('click',()=>{
+  document.getElementById('mobileNav').classList.toggle('open');
+});
+document.querySelectorAll('.btn-pp,.btn-py').forEach(btn=>{
+  btn.addEventListener('click',function(e){
+    const r=this.getBoundingClientRect(),size=Math.max(r.width,r.height)*1.4;
+    const ripple=document.createElement('span');
+    ripple.className='btn-ripple';
+    ripple.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-r.left-size/2}px;top:${e.clientY-r.top-size/2}px`;
+    this.appendChild(ripple);setTimeout(()=>ripple.remove(),600);
+  });
+});
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add(e.target.tagName==='SECTION'?'visible':'in');});
+},{threshold:.1});
+document.querySelectorAll('section').forEach(s=>io.observe(s));
+document.querySelectorAll('.fade-up').forEach(el=>io.observe(el));
+function layoutWidgets(){
+  const wrap=document.getElementById('heroImgWrap');if(!wrap)return;
+  const cards=wrap.querySelectorAll('.wcard');let grid=wrap.querySelector('.widgets-grid');
+  if(window.innerWidth<768){
+    if(!grid){grid=document.createElement('div');grid.className='widgets-grid';wrap.appendChild(grid);}
+    cards.forEach(c=>grid.appendChild(c));
+  }else{if(grid){cards.forEach(c=>wrap.insertBefore(c,grid));grid.remove();}}
+}
+layoutWidgets();window.addEventListener('resize',layoutWidgets);
+document.querySelectorAll('.ach-card,.pkg-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    if(card.classList.contains('active'))return;
+    const r=card.getBoundingClientRect();
+    card.style.transform=`perspective(900px) rotateX(${((e.clientY-r.top)/r.height-.5)*-12}deg) rotateY(${((e.clientX-r.left)/r.width-.5)*12}deg) scale(1.03)`;
+  });
+  card.addEventListener('mouseleave',()=>{if(!card.classList.contains('active'))card.style.transform='';});
+});
+document.querySelectorAll('.node').forEach(node=>{
+  node.addEventListener('click',()=>{
+    const was=node.classList.contains('active');
+    document.querySelectorAll('.node').forEach(n=>n.classList.remove('active'));
+    if(!was)node.classList.add('active');
+  });
+});
+document.querySelectorAll('.step-wrap').forEach(step=>{
+  step.addEventListener('click',()=>{
+    const was=step.classList.contains('active');
+    document.querySelectorAll('.step-wrap').forEach(s=>{
+      s.classList.remove('active');
+      const ico=s.querySelector('.step-ico');if(ico){ico.style.animation='none';void ico.offsetWidth;}
+      const icn=s.querySelector('.step-ico i');if(icn){icn.style.animation='none';void icn.offsetWidth;}
+    });
+    if(!was)step.classList.add('active');
+  });
+});
+document.querySelectorAll('.ach-card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    const was=card.classList.contains('active');
+    document.querySelectorAll('.ach-card').forEach(c=>{c.classList.remove('active');c.style.transform='';});
+    if(!was)card.classList.add('active');
+  });
+});
+const titleObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});
+},{threshold:.15});
+document.querySelectorAll('.section-title-anim').forEach(el=>titleObs.observe(el));
+function animateCounter(el,target,suffix=''){
+  let start=0;const inc=target/100;
+  const t=setInterval(()=>{start+=inc;if(start>=target){start=target;clearInterval(t);}el.textContent=Math.floor(start)+suffix;},16);
+}
+const counterObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){counterObs.unobserve(e.target);animateCounter(e.target,parseInt(e.target.dataset.count),e.target.dataset.suffix||'');}});
+},{threshold:.6});
+document.querySelectorAll('[data-count]').forEach(el=>counterObs.observe(el));
+(function(){
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div'),size=Math.random()*10+5;
+    p.className='particle';
+    p.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;animation-duration:${12+Math.random()*18}s;animation-delay:${Math.random()*14}s;opacity:${.04+Math.random()*.06};background:${Math.random()>.5?'var(--pp)':'var(--py)'}`;
+    document.body.appendChild(p);
+  }
+})();
+</script>
+</body>
+</html>
