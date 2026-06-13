@@ -276,7 +276,7 @@ img{max-width:100%;height:auto}
 </head>
 <body>
 
-<!-- <div id="scroll-progress"></div>-->
+ <div id="scroll-progress"></div>
 
 <!-- NAVBAR  <nav class="navbar sticky-top" id="navbar">
   <div class="container">
@@ -669,7 +669,7 @@ window.addEventListener('scroll',()=>{
   progressBar.style.width=pct+'%';
   document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);
 });
-const navToggle = document.getElementById('navToggle');
+/*const navToggle = document.getElementById('navToggle');
 const mobileNav = document.getElementById('mobileNav');
 const hamburgerIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
 const closeIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>`;
@@ -685,7 +685,7 @@ mobileNav.querySelectorAll('a').forEach(link => {
     navToggle.innerHTML = hamburgerIcon;
     navToggle.setAttribute('aria-expanded', false);
   });
-});
+});*/
 document.querySelectorAll('.btn-pp,.btn-py').forEach(btn=>{
   btn.addEventListener('click',function(e){
     const r=this.getBoundingClientRect(),size=Math.max(r.width,r.height)*1.4;
